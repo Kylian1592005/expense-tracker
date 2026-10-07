@@ -1,12 +1,17 @@
 import { useState } from "react";
 
-export default function TransactionForm({ setStoredTransactions }) {
-  const [inputForm, setInputForm] = useState({
+export default function TransactionForm({
+  storedTransactions,
+  setStoredTransactions,
+}) {
+  const initialForm = {
     title: "",
     amount: "",
     type: "",
     category: "",
-  });
+  };
+
+  const [inputForm, setInputForm] = useState(initialForm);
 
   const DEFAULT_CATEGORIES = [
     "Food & Dining",
@@ -27,12 +32,21 @@ export default function TransactionForm({ setStoredTransactions }) {
     }));
   };
 
-  const handleAddTransaction = () =>
-    setStoredTransactions((prev) => [...prev, inputForm]);
+  const newId = storedTransactions.reduce((max, currentValue) => {
+    return Number(currentValue.id) > Number(max) ? currentValue.id : max.id;
+  }, 0);
+  const formData = {
+    ...inputForm,
+    id: newId ? newId + 1 : 1,
+  };
+
+  const handleAddTransaction = () => {
+    setStoredTransactions((prev) => [...prev, formData]);
+    setInputForm(initialForm);
+  };
 
   return (
     <div>
-      <h1>Form</h1>
       <div>
         <label htmlFor="title">Title: </label>
         <input
@@ -44,7 +58,7 @@ export default function TransactionForm({ setStoredTransactions }) {
 
         <label htmlFor="amount">Amount($): </label>
         <input
-          type="text"
+          type="number"
           id="amount"
           value={inputForm.amount}
           onChange={(e) => handleInputChange(e.target.id, e.target.value)}

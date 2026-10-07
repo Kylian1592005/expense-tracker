@@ -10,7 +10,14 @@ const data = [
     type: "expense",
     category: "Food",
     date: "2026-10-07",
-    notes: "Supermarket items",
+  },
+  {
+    id: 2,
+    title: "Shopping",
+    amount: 45.5,
+    type: "expense",
+    category: "Food",
+    date: "2026-10-07",
   },
 ];
 
@@ -19,10 +26,14 @@ function App() {
 
   return (
     <div>
-      <TransactionForm setStoredTransactions={setStoredTransactions} />
+      <h1>Expense Tracker</h1>
+      <TransactionForm
+        storedTransactions={storedTransactions}
+        setStoredTransactions={setStoredTransactions}
+      />
       <ul>
         {storedTransactions.map((transaction) => (
-          <li key={transaction.id}>{transaction.title}</li>
+          <li key={transaction.id}>{transaction.id}</li>
         ))}
       </ul>
     </div>
