@@ -12,41 +12,70 @@ export default function TransactionForm({
   };
 
   const [inputForm, setInputForm] = useState(initialForm);
+  const [checkInput, setCheckInput] = useState(false);
+  const [checkAmountValid, setCheckAmountValid] = useState(false);
 
-  const DEFAULT_CATEGORIES = [
-    "Food & Dining",
-    "Housing & Utilities",
-    "Transportation",
-    "Entertainment",
-    "Shopping",
-    "Salary",
-    "Other",
-  ];
-
-  const DEFAULT_TYPE = ["expense", "income"];
+  const DEFAULT_VALUES = {
+    types: ["expense", "income"],
+    categories: [
+      "Food & Dining",
+      "Housing & Utilities",
+      "Transportation",
+      "Entertainment",
+      "Shopping",
+      "Salary",
+      "Other",
+    ],
+  };
 
   const handleInputChange = (id, value) => {
     setInputForm((prevForm) => ({
       ...prevForm,
       [id]: value,
     }));
+    if (id === "amount") {
+      if (value > 0) {
+        setCheckAmountValid(false);
+      }
+    }
   };
 
   const newId = storedTransactions.reduce((max, currentValue) => {
-    return Number(currentValue.id) > Number(max) ? currentValue.id : max.id;
+    return Number(currentValue.id) > Number(max)
+      ? Number(currentValue.id)
+      : Number(max);
   }, 0);
-  const formData = {
-    ...inputForm,
-    id: newId ? newId + 1 : 1,
-  };
 
-  const handleAddTransaction = () => {
-    setStoredTransactions((prev) => [...prev, formData]);
+  const handleAddTransaction = (e) => {
+    e.preventDefault();
+    const { title, amount, type, category } = inputForm;
+    const numericAmount = parseFloat(amount);
+
+    if (!title.trim() || !amount || !type || !category) {
+      setCheckInput(true);
+      return;
+    }
+
+    if (!Number.isFinite(numericAmount) || numericAmount <= 0) {
+      setCheckAmountValid(true);
+      return;
+    }
+
+    const newTransaction = {
+      title: title.trim(),
+      amount: numericAmount,
+      type,
+      category,
+      id: newId ? newId + 1 : 1,
+    };
+    setStoredTransactions((prev) => [...prev, newTransaction]);
     setInputForm(initialForm);
+    setCheckInput(false);
+    setCheckAmountValid(false);
   };
 
   return (
-    <div>
+    <form onSubmit={handleAddTransaction}>
       <div>
         <label htmlFor="title">Title: </label>
         <input
@@ -55,15 +84,23 @@ export default function TransactionForm({
           value={inputForm.title}
           onChange={(e) => handleInputChange(e.target.id, e.target.value)}
         />
+      </div>
 
+      <div>
         <label htmlFor="amount">Amount($): </label>
         <input
           type="number"
           id="amount"
+          step="0.01"
           value={inputForm.amount}
           onChange={(e) => handleInputChange(e.target.id, e.target.value)}
         />
+        {checkAmountValid && (
+          <p style={{ color: "red" }}>Amount must be greater than 0</p>
+        )}
+      </div>
 
+      <div>
         <label htmlFor="type">Type: </label>
         <select
           id="type"
@@ -73,13 +110,15 @@ export default function TransactionForm({
           <option value="" disabled>
             Select type
           </option>
-          {DEFAULT_TYPE.map((type) => (
+          {DEFAULT_VALUES.types.map((type) => (
             <option key={type} value={type}>
               {type}
             </option>
           ))}
         </select>
+      </div>
 
+      <div>
         <label htmlFor="category">Category: </label>
         <select
           id="category"
@@ -89,15 +128,17 @@ export default function TransactionForm({
           <option value="" disabled>
             Select category
           </option>
-          {DEFAULT_CATEGORIES.map((cat) => (
+          {DEFAULT_VALUES.categories.map((cat) => (
             <option key={cat} value={cat}>
               {cat}
             </option>
           ))}
         </select>
-
-        <button onClick={handleAddTransaction}>Add transaction</button>
       </div>
-    </div>
+
+      {checkInput && <p style={{ color: "red" }}>All fields are required!</p>}
+
+      <button type="submit">Add transaction</button>
+    </form>
   );
 }

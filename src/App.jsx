@@ -12,7 +12,7 @@ const data = [
     date: "2026-10-07",
   },
   {
-    id: 2,
+    id: 7,
     title: "Shopping",
     amount: 45.5,
     type: "expense",
