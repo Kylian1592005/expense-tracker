@@ -2,6 +2,7 @@ import { useState } from "react";
 import "./App.css";
 import TransactionForm from "./components/TransactionForm";
 import SummaryCard from "./components/SummaryCard";
+import TransactionList from "./components/TransactionList";
 
 const data = [
   {
@@ -44,6 +45,13 @@ function App() {
 
   const totalBalance = incomeBalance - expenseBalance;
 
+  const handleDeleteTransaction = (id) => {
+    const filteredTransactions = storedTransactions.filter(
+      (transaction) => transaction.id !== id,
+    );
+    setStoredTransactions(filteredTransactions);
+  };
+
   return (
     <div>
       <h1>Expense Tracker</h1>
@@ -58,11 +66,11 @@ function App() {
         storedTransactions={storedTransactions}
         setStoredTransactions={setStoredTransactions}
       />
-      <ul>
-        {storedTransactions.map((transaction) => (
-          <li key={transaction.id}>{transaction.id}</li>
-        ))}
-      </ul>
+
+      <TransactionList
+        storedTransactions={storedTransactions}
+        onDeleteTransaction={handleDeleteTransaction}
+      />
     </div>
   );
 }
