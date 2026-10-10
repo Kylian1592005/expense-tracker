@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "./App.css";
 import TransactionForm from "./components/TransactionForm";
 import SummaryCard from "./components/SummaryCard";
@@ -24,7 +24,14 @@ const data = [
 ];
 
 function App() {
-  const [storedTransactions, setStoredTransactions] = useState(data);
+  const [storedTransactions, setStoredTransactions] = useState(() => {
+    const storedData = localStorage.getItem("transactions");
+    return storedData ? JSON.parse(storedData) : data
+  });
+
+  useEffect(() => {
+    localStorage.setItem("transactions", JSON.stringify(storedTransactions));
+  }, [storedTransactions]);
 
   const typeExpense = storedTransactions.filter(
     (transaction) => transaction.type === "expense",

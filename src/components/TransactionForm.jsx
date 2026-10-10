@@ -66,7 +66,7 @@ export default function TransactionForm({
       amount: numericAmount,
       type,
       category,
-      date: new Date(),
+      date: new Date().toISOString(),
       id: newId ? newId + 1 : 1,
     };
     setStoredTransactions((prev) => [...prev, newTransaction]);
