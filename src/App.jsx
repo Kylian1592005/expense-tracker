@@ -26,7 +26,7 @@ const data = [
 function App() {
   const [storedTransactions, setStoredTransactions] = useState(() => {
     const storedData = localStorage.getItem("transactions");
-    return storedData ? JSON.parse(storedData) : data
+    return storedData ? JSON.parse(storedData) : data;
   });
 
   useEffect(() => {
@@ -60,24 +60,33 @@ function App() {
   };
 
   return (
-    <div>
-      <h1>Expense Tracker</h1>
+    <div className="min-h-screen bg-base-300 py-10 px-4">
+      <div className="max-w-3xl mx-auto flex flex-col gap-6">
+        <header className="card bg-base-100 shadow-xl p-6 border border-base-200 w-full text-center">
+          <h1 className="text-3xl font-extrabold text-base-content">
+            Expense Tracker
+          </h1>
+          <p className="text-sm text-base-content/70 mt-1">
+            Manage your income and expenses seamlessly
+          </p>
+        </header>
 
-      <SummaryCard
-        totalBalance={totalBalance}
-        incomeBalance={incomeBalance}
-        expenseBalance={expenseBalance}
-      />
+        <SummaryCard
+          totalBalance={totalBalance}
+          incomeBalance={incomeBalance}
+          expenseBalance={expenseBalance}
+        />
 
-      <TransactionForm
-        storedTransactions={storedTransactions}
-        setStoredTransactions={setStoredTransactions}
-      />
+        <TransactionForm
+          storedTransactions={storedTransactions}
+          setStoredTransactions={setStoredTransactions}
+        />
 
-      <TransactionList
-        storedTransactions={storedTransactions}
-        onDeleteTransaction={handleDeleteTransaction}
-      />
+        <TransactionList
+          storedTransactions={storedTransactions}
+          onDeleteTransaction={handleDeleteTransaction}
+        />
+      </div>
     </div>
   );
 }
