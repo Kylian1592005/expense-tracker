@@ -2,6 +2,7 @@ import TransactionItem from "./TransactionItem";
 
 export default function TransactionList({
   storedTransactions,
+  onEditTransaction,
   onDeleteTransaction,
 }) {
   return (
@@ -16,10 +17,15 @@ export default function TransactionList({
         </p>
       ) : (
         <div className="flex flex-col gap-3">
-          {storedTransactions.map((transaction) => (
+          {storedTransactions.map((transaction, index) => (
             <TransactionItem
-              key={transaction.id}
+              key={
+                transaction.id != null
+                  ? `transaction-${transaction.id}`
+                  : `transaction-index-${index}`
+              }
               transaction={transaction}
+              onEditTransaction={onEditTransaction}
               onDeleteTransaction={onDeleteTransaction}
             />
           ))}

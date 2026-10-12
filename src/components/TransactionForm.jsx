@@ -8,33 +8,44 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 
+const DEFAULT_VALUES = {
+  types: ["expense", "income"],
+  categories: [
+    "Food & Dining",
+    "Housing & Utilities",
+    "Transportation",
+    "Entertainment",
+    "Shopping",
+    "Salary",
+    "Other",
+  ],
+};
+
+const initialForm = {
+  title: "",
+  amount: "",
+  type: "",
+  category: "",
+};
+
 export default function TransactionForm({
   storedTransactions,
   setStoredTransactions,
+  selectedTransaction,
+  setSelectedTransaction,
 }) {
-  const initialForm = {
-    title: "",
-    amount: "",
-    type: "",
-    category: "",
-  };
-
-  const [inputForm, setInputForm] = useState(initialForm);
+  const [inputForm, setInputForm] = useState(
+    selectedTransaction
+      ? {
+          title: selectedTransaction.title,
+          amount: selectedTransaction.amount,
+          type: selectedTransaction.type,
+          category: selectedTransaction.category,
+        }
+      : initialForm,
+  );
   const [checkInput, setCheckInput] = useState(false);
   const [checkAmountValid, setCheckAmountValid] = useState(false);
-
-  const DEFAULT_VALUES = {
-    types: ["expense", "income"],
-    categories: [
-      "Food & Dining",
-      "Housing & Utilities",
-      "Transportation",
-      "Entertainment",
-      "Shopping",
-      "Salary",
-      "Other",
-    ],
-  };
 
   const handleInputChange = (id, value) => {
     setInputForm((prevForm) => ({
@@ -46,6 +57,13 @@ export default function TransactionForm({
         setCheckAmountValid(false);
       }
     }
+  };
+
+  const handleCancelTransaction = () => {
+    setSelectedTransaction(null);
+    setInputForm(initialForm);
+    setCheckInput(false);
+    setCheckAmountValid(false);
   };
 
   const newId = storedTransactions.reduce((max, currentValue) => {
@@ -69,15 +87,31 @@ export default function TransactionForm({
       return;
     }
 
-    const newTransaction = {
-      title: title.trim(),
-      amount: numericAmount,
-      type,
-      category,
-      date: new Date().toISOString(),
-      id: newId ? newId + 1 : 1,
-    };
-    setStoredTransactions((prev) => [...prev, newTransaction]);
+    if (selectedTransaction) {
+      setStoredTransactions((prev) =>
+        prev.map((transaction) =>
+          transaction.id === selectedTransaction.id
+            ? {
+                ...inputForm,
+                amount: numericAmount,
+                id: transaction.id,
+                date: new Date().toISOString(),
+              }
+            : transaction,
+        ),
+      );
+      setSelectedTransaction(null);
+    } else {
+      const newTransaction = {
+        title: title.trim(),
+        amount: numericAmount,
+        type,
+        category,
+        date: new Date().toISOString(),
+        id: newId ? newId + 1 : 1,
+      };
+      setStoredTransactions((prev) => [...prev, newTransaction]);
+    }
     setInputForm(initialForm);
     setCheckInput(false);
     setCheckAmountValid(false);
@@ -89,7 +123,7 @@ export default function TransactionForm({
       className="card bg-base-100 shadow-xl p-6 w-full border border-base-200 rounded-2xl"
     >
       <h2 className="text-xl font-bold mb-5 text-base-content tracking-tight">
-        Add New Transaction
+        {selectedTransaction ? "Edit Transaction" : "Add New Transaction"}
       </h2>
 
       <div className="flex flex-col gap-4">
@@ -236,8 +270,18 @@ export default function TransactionForm({
           type="submit"
           className="btn btn-primary mt-3 w-full shadow-md font-semibold hover:shadow-lg transition-all"
         >
-          Add Transaction
+          {selectedTransaction ? "Update Transaction" : "Add Transaction"}
         </button>
+
+        {selectedTransaction && (
+          <button
+            type="button"
+            onClick={handleCancelTransaction}
+            className="btn btn-outline btn-primary mt-1 w-full shadow-sm font-semibold transition-all"
+          >
+            Cancel
+          </button>
+        )}
       </div>
     </form>
   );

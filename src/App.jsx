@@ -28,6 +28,7 @@ function App() {
     const storedData = localStorage.getItem("transactions");
     return storedData ? JSON.parse(storedData) : data;
   });
+  const [selectedTransaction, setSelectedTransaction] = useState(null);
 
   useEffect(() => {
     localStorage.setItem("transactions", JSON.stringify(storedTransactions));
@@ -59,6 +60,15 @@ function App() {
     setStoredTransactions(filteredTransactions);
   };
 
+  const handleEditTransaction = (id) => {
+    const target = storedTransactions.find(
+      (transaction) => transaction.id === id,
+    );
+    if (!target) return;
+
+    setSelectedTransaction(target);
+  };
+
   return (
     <div className="min-h-screen bg-base-300 py-10 px-4">
       <div className="max-w-3xl mx-auto flex flex-col gap-6">
@@ -80,10 +90,13 @@ function App() {
         <TransactionForm
           storedTransactions={storedTransactions}
           setStoredTransactions={setStoredTransactions}
+          selectedTransaction={selectedTransaction}
+          setSelectedTransaction={setSelectedTransaction}
         />
 
         <TransactionList
           storedTransactions={storedTransactions}
+          onEditTransaction={handleEditTransaction}
           onDeleteTransaction={handleDeleteTransaction}
         />
       </div>
