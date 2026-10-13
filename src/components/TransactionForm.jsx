@@ -206,7 +206,10 @@ export default function TransactionForm({
               <li key={type}>
                 <button
                   type="button"
-                  onClick={() => handleInputChange("type", type)}
+                  onClick={() => {
+                    handleInputChange("type", type);
+                    document.activeElement?.blur();
+                  }}
                   className="capitalize py-2.5 rounded-lg hover:bg-primary hover:text-primary-content transition-colors"
                 >
                   {type}
@@ -249,6 +252,7 @@ export default function TransactionForm({
                   type="button"
                   onClick={() => {
                     handleInputChange("category", cat);
+                    document.activeElement?.blur();
                   }}
                   className="text-left py-2.5 rounded-lg hover:bg-primary hover:text-primary-content transition-colors"
                 >
