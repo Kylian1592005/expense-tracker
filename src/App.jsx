@@ -3,6 +3,7 @@ import "./App.css";
 import TransactionForm from "./components/TransactionForm";
 import SummaryCard from "./components/SummaryCard";
 import TransactionList from "./components/TransactionList";
+import SearchFilter from "./components/SearchFilter";
 
 const data = [
   {
@@ -29,6 +30,10 @@ function App() {
     return storedData ? JSON.parse(storedData) : data;
   });
   const [selectedTransaction, setSelectedTransaction] = useState(null);
+  const [query, setQuery] = useState("");
+  const [filteredType, setFilteredType] = useState("");
+  const [sortOrder, setSortOrder] = useState("");
+  const [dateSortOrder, setDateSortOrder] = useState("");
 
   useEffect(() => {
     localStorage.setItem("transactions", JSON.stringify(storedTransactions));
@@ -69,6 +74,22 @@ function App() {
     setSelectedTransaction(target);
   };
 
+  const filteredTransactions = storedTransactions
+    .filter((transaction) => {
+      const cleanQuery = query.trim().toLowerCase();
+      const matchSearch = transaction.title.toLowerCase().includes(cleanQuery);
+      const matchType = transaction.type.includes(filteredType);
+      return matchSearch && matchType;
+    })
+
+    .sort((a, b) => {
+      if (sortOrder === "asc") return a.amount - b.amount;
+      if (sortOrder === "desc") return b.amount - a.amount;
+      if (dateSortOrder === "newest")
+        return new Date(b.date) - new Date(a.date);
+      if (dateSortOrder === "oldest")
+        return new Date(a.date) - new Date(b.date);
+    });
   return (
     <div className="min-h-screen bg-base-300 py-10 px-4">
       <div className="max-w-3xl mx-auto flex flex-col gap-6">
@@ -94,8 +115,19 @@ function App() {
           setSelectedTransaction={setSelectedTransaction}
         />
 
+        <SearchFilter
+          query={query}
+          setQuery={setQuery}
+          filteredType={filteredType}
+          setFilteredType={setFilteredType}
+          sortOrder={sortOrder}
+          setSortOrder={setSortOrder}
+          dateSortOrder={dateSortOrder}
+          setDateSortOrder={setDateSortOrder}
+        />
+
         <TransactionList
-          storedTransactions={storedTransactions}
+          storedTransactions={filteredTransactions}
           onEditTransaction={handleEditTransaction}
           onDeleteTransaction={handleDeleteTransaction}
         />
