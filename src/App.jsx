@@ -2,27 +2,9 @@ import { useEffect, useState } from "react";
 import "./App.css";
 import TransactionForm from "./components/TransactionForm";
 import SummaryCard from "./components/SummaryCard";
-import TransactionList from "./components/TransactionList";
 import SearchFilter from "./components/SearchFilter";
-
-const data = [
-  {
-    id: 1,
-    title: "Grocery Shopping",
-    amount: 45.5,
-    type: "expense",
-    category: "Food",
-    date: "2026-10-07",
-  },
-  {
-    id: 7,
-    title: "Shopping",
-    amount: 100,
-    type: "income",
-    category: "Food",
-    date: "2026-10-07",
-  },
-];
+import Pagination from "./components/Pagination";
+import { data } from "./data/data";
 
 function App() {
   const [storedTransactions, setStoredTransactions] = useState(() => {
@@ -126,8 +108,8 @@ function App() {
           setDateSortOrder={setDateSortOrder}
         />
 
-        <TransactionList
-          storedTransactions={filteredTransactions}
+        <Pagination
+          filteredTransactions={filteredTransactions}
           onEditTransaction={handleEditTransaction}
           onDeleteTransaction={handleDeleteTransaction}
         />
