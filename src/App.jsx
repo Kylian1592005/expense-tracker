@@ -5,6 +5,7 @@ import SummaryCard from "./components/SummaryCard";
 import SearchFilter from "./components/SearchFilter";
 import Pagination from "./components/Pagination";
 import { data } from "./data/data";
+import CategoryBreakdown from "./components/CategoryBreakdown";
 
 function App() {
   const [storedTransactions, setStoredTransactions] = useState(() => {
@@ -89,6 +90,8 @@ function App() {
           incomeBalance={incomeBalance}
           expenseBalance={expenseBalance}
         />
+
+        <CategoryBreakdown storedTransactions={storedTransactions} />
 
         <TransactionForm
           storedTransactions={storedTransactions}
