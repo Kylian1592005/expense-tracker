@@ -17,18 +17,23 @@ function App() {
   const [filteredType, setFilteredType] = useState("");
   const [sortOrder, setSortOrder] = useState("");
   const [dateSortOrder, setDateSortOrder] = useState("");
+  const [filteredMonthly, setFilteredMonthly] = useState("");
 
   useEffect(() => {
     localStorage.setItem("transactions", JSON.stringify(storedTransactions));
   }, [storedTransactions]);
 
-  const typeExpense = storedTransactions.filter(
-    (transaction) => transaction.type === "expense",
-  );
-  const typeIncome = storedTransactions.filter(
-    (transaction) => transaction.type === "income",
+  const monthlyTransactions = storedTransactions.filter((transaction) =>
+    transaction.date.startsWith(filteredMonthly),
   );
 
+  const typeExpense = monthlyTransactions.filter(
+    (transaction) => transaction.type === "expense",
+  );
+  const typeIncome = monthlyTransactions.filter(
+    (transaction) => transaction.type === "income",
+  );
+  
   const expenseBalance = typeExpense.reduce(
     (total, transaction) => total + transaction.amount,
     0,
@@ -73,6 +78,8 @@ function App() {
       if (dateSortOrder === "oldest")
         return new Date(a.date) - new Date(b.date);
     });
+
+  
   return (
     <div className="min-h-screen bg-base-300 py-10 px-4">
       <div className="max-w-3xl mx-auto flex flex-col gap-6">
@@ -89,6 +96,9 @@ function App() {
           totalBalance={totalBalance}
           incomeBalance={incomeBalance}
           expenseBalance={expenseBalance}
+          storedTransactions={storedTransactions}
+          filteredMonthly={filteredMonthly}
+          setFilteredMonthly={setFilteredMonthly}
         />
 
         <CategoryBreakdown storedTransactions={storedTransactions} />

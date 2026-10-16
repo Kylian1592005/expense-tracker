@@ -7,19 +7,7 @@ import {
   ListFilter,
 } from "lucide-react";
 import { useState } from "react";
-
-const DEFAULT_VALUES = {
-  types: ["expense", "income"],
-  categories: [
-    "Food & Dining",
-    "Housing & Utilities",
-    "Transportation",
-    "Entertainment",
-    "Shopping",
-    "Salary",
-    "Other",
-  ],
-};
+import { DEFAULT_VALUES } from "../data/data";
 
 const initialForm = {
   title: "",
