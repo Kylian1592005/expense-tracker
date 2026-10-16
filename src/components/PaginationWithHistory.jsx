@@ -1,7 +1,7 @@
 import { useState } from "react";
 import TransactionList from "./TransactionList";
 
-export default function Pagination({
+export default function PaginationWithHistory({
   filteredTransactions,
   onEditTransaction,
   onDeleteTransaction,

@@ -3,9 +3,9 @@ import "./App.css";
 import TransactionForm from "./components/TransactionForm";
 import SummaryCard from "./components/SummaryCard";
 import SearchFilter from "./components/SearchFilter";
-import Pagination from "./components/Pagination";
 import { data } from "./data/data";
 import CategoryBreakdown from "./components/CategoryBreakdown";
+import PaginationWithHistory from "./components/PaginationWithHistory";
 
 function App() {
   const [storedTransactions, setStoredTransactions] = useState(() => {
@@ -111,7 +111,7 @@ function App() {
           setDateSortOrder={setDateSortOrder}
         />
 
-        <Pagination
+        <PaginationWithHistory
           filteredTransactions={filteredTransactions}
           onEditTransaction={handleEditTransaction}
           onDeleteTransaction={handleDeleteTransaction}
