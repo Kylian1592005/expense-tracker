@@ -22,7 +22,7 @@ export default function TransactionForm({
   selectedTransaction,
   setSelectedTransaction,
 }) {
-  const [inputForm, setInputForm] = useState(
+  const [inputForm, setInputForm] = useState(() =>
     selectedTransaction
       ? {
           title: selectedTransaction.title,
